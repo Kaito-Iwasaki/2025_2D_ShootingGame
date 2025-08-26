@@ -15,5 +15,6 @@ void UninitStage1(void);
 void UpdateStage1(void);
 void DrawStage1(void);
 void SetWave(int nWave);
+void TogglePause(bool bPause);
 
 #endif

@@ -19,6 +19,7 @@
 #include "score.h"
 #include "effect.h"
 #include "healthbar.h"
+#include "pause.h"
 
 //*********************************************************************
 // マクロ定義
@@ -78,6 +79,8 @@ void InitStage1(void)
 	InitScore();		// スコア
 	InitEffect();		// エフェクト
 	InitHealthbar();
+	InitPause();
+	
 
 	//***********************************
 	// サウンドの再生
@@ -106,6 +109,7 @@ void UninitStage1(void)
 	UninitScore();		// スコア
 	UninitEffect();		// エフェクト
 	UninitHealthbar();
+	UninitPause();
 }
 
 //=====================================================================
@@ -183,6 +187,10 @@ void UpdateStage1(void)
 		UpdateEffect();		// エフェクト
 		UpdateHealthbar();
 	}
+	else
+	{
+		UpdatePause();
+	}
 
 	if (GetKeyboardTrigger(DIK_P) == true || GetJoypadTrigger(JOYKEY_START))
 	{// ポーズ
@@ -192,6 +200,7 @@ void UpdateStage1(void)
 		if (stage1.bPaused == true)
 		{
 			PauseSound(SOUND_LABEL_STAGE01);
+			SetPauseMenuCursor(PAUSE_MENU_CONTINUE);
 		}
 		else
 		{
@@ -221,6 +230,11 @@ void DrawStage1(void)
 	DrawEffect();		// [5]エフェクト
 	DrawScore();		// [6]スコア
 	DrawHealthbar();
+
+	if (stage1.bPaused)
+	{
+		DrawPause();
+	}
 }
 
 //=====================================================================
@@ -363,4 +377,9 @@ void SetWave(int nWave)
 
 	stage1.nGameCount = 0;
 	stage1.waveState = WAVE_PROGRESSING;
+}
+
+void TogglePause(bool bPause)
+{
+	stage1.bPaused = bPause;
 }
