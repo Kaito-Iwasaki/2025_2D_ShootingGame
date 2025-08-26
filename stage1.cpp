@@ -46,7 +46,11 @@ void InitStage1(void)
 	stage1.waveState = WAVE_START;
 	stage1.nWave = 0;
 
-	//memset(&timeline[0], 0, sizeof(ENEMYTIMELINE) * 256);
+
+
+	memset(&timeline[0], 0, sizeof(ENEMYTIMELINE) * 256);
+
+	LoadStage(&timeline[0], "data\\STAGE\\stage01.txt");
 
 	//timeline[0].nWave = 0;
 	//timeline[0].nCountTime = 1;
@@ -127,6 +131,7 @@ void UpdateStage1(void)
 			SetWave(stage1.nWave);
 
 		case WAVE_PROGRESSING:		// ウェーブ中
+
 			stage1.nGameCount++;	// ゲームカウントを進める
 
 			for (int nCount = 0; nCount < 256; nCount++)
@@ -150,6 +155,7 @@ void UpdateStage1(void)
 				stage1.waveState = WAVE_END;
 
 			}
+
 			break;
 
 		case WAVE_END:				// ウェーブ終了
@@ -244,136 +250,136 @@ void SetWave(int nWave)
 {
 	ENEMY* pEnemy;
 
-	switch (nWave)
-	{
-	case 0:
-		for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -50 + (-50 * nCntEnemy), 0), 0);
-			pEnemy->nCounterStep -= 3 * nCntEnemy;
-			pEnemy->move.x = 15.0f;
-		}
-		break;
+	//switch (nWave)
+	//{
+	//case 0:
+	//	for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -50 + (-50 * nCntEnemy), 0), 0);
+	//		pEnemy->nCounterStep -= 3 * nCntEnemy;
+	//		pEnemy->move.x = 15.0f;
+	//	}
+	//	break;
 
-	case 1:
-		for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -50 + (-50 * nCntEnemy), 0), 0);
-			pEnemy->nCounterStep -= 3 * nCntEnemy;
-			pEnemy->move.x = -15.0f;
-		}
-		break;
+	//case 1:
+	//	for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -50 + (-50 * nCntEnemy), 0), 0);
+	//		pEnemy->nCounterStep -= 3 * nCntEnemy;
+	//		pEnemy->move.x = -15.0f;
+	//	}
+	//	break;
 
-	case 2:
-		for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -50 + (-50 * nCntEnemy), 0), 0);
-			pEnemy->nCounterStep -= 3 * nCntEnemy;
-			pEnemy->move.x = 15.0f;
-		}
+	//case 2:
+	//	for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -50 + (-50 * nCntEnemy), 0), 0);
+	//		pEnemy->nCounterStep -= 3 * nCntEnemy;
+	//		pEnemy->move.x = 15.0f;
+	//	}
 
-		for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -50 + (-50 * nCntEnemy), 0), 0);
-			pEnemy->nCounterStep -= 3 * nCntEnemy;
-			pEnemy->move.x = -15.0f;
-		}
-		break;
+	//	for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -50 + (-50 * nCntEnemy), 0), 0);
+	//		pEnemy->nCounterStep -= 3 * nCntEnemy;
+	//		pEnemy->move.x = -15.0f;
+	//	}
+	//	break;
 
-	case 3:
-		for (int nCntEnemy = 0; nCntEnemy < 20; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(
-				D3DXVECTOR3(
-					SCREEN_WIDTH / 2 + (rand() % 1000 + 1) - 500,
-					-50.0 - (rand() % (100 + 1)),
-					0
-				), 1
-			);
-			pEnemy->nCounterStep -= 3 * nCntEnemy;
-			pEnemy->move.x = -15.0f;
-		}
-		break;
+	//case 3:
+	//	for (int nCntEnemy = 0; nCntEnemy < 20; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(
+	//			D3DXVECTOR3(
+	//				SCREEN_WIDTH / 2 + (rand() % 1000 + 1) - 500,
+	//				-50.0 - (rand() % (100 + 1)),
+	//				0
+	//			), 1
+	//		);
+	//		pEnemy->nCounterStep -= 3 * nCntEnemy;
+	//		pEnemy->move.x = -15.0f;
+	//	}
+	//	break;
 
-	case 4:
-		for (int nCntEnemy = 0; nCntEnemy < 3; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + (-400 + (nCntEnemy * 400)), -50, 0), 2);
-			pEnemy->nLife = 10;
-		}
+	//case 4:
+	//	for (int nCntEnemy = 0; nCntEnemy < 3; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + (-400 + (nCntEnemy * 400)), -50, 0), 2);
+	//		pEnemy->nLife = 10;
+	//	}
 
-		break;
+	//	break;
 
-	case 5:
-		for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -50 + (-50 * nCntEnemy), 0), 0);
-			pEnemy->nCounterStep -= 3 * nCntEnemy;
-			pEnemy->move.x = 15.0f;
-		}
+	//case 5:
+	//	for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -50 + (-50 * nCntEnemy), 0), 0);
+	//		pEnemy->nCounterStep -= 3 * nCntEnemy;
+	//		pEnemy->move.x = 15.0f;
+	//	}
 
-		for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -50 + (-50 * nCntEnemy), 0), 0);
-			pEnemy->nCounterStep -= 3 * nCntEnemy;
-			pEnemy->move.x = -15.0f;
-		}
+	//	for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -50 + (-50 * nCntEnemy), 0), 0);
+	//		pEnemy->nCounterStep -= 3 * nCntEnemy;
+	//		pEnemy->move.x = -15.0f;
+	//	}
 
-		for (int nCntEnemy = 0; nCntEnemy < 3; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + (-400 + (nCntEnemy * 400)), -50, 0), 2);
-			pEnemy->nLife = 10;
-		}
+	//	for (int nCntEnemy = 0; nCntEnemy < 3; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + (-400 + (nCntEnemy * 400)), -50, 0), 2);
+	//		pEnemy->nLife = 10;
+	//	}
 
-		break;
+	//	break;
 
-	case 6:
-		for (int nCntEnemy = 0; nCntEnemy < 20; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(RandRange(0,SCREEN_WIDTH), -50 + (-20 * nCntEnemy), 0), 3);
-			pEnemy->move.y = RandRange(4, 7);
-		}
-		break;
+	//case 6:
+	//	for (int nCntEnemy = 0; nCntEnemy < 20; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(RandRange(0,SCREEN_WIDTH), -50 + (-20 * nCntEnemy), 0), 3);
+	//		pEnemy->move.y = RandRange(4, 7);
+	//	}
+	//	break;
 
-	case 7:
-		for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
-		{
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -50 + (-50 * nCntEnemy), 0), 4);
-			pEnemy->move.y = 3;
-			pEnemy->nLife = 3;
-			pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -50 + (-50 * nCntEnemy), 0), 4);
-			pEnemy->move.y = 3;
-			pEnemy->nLife = 3;
-		}
-		break;
+	//case 7:
+	//	for (int nCntEnemy = 0; nCntEnemy < 10; nCntEnemy++)
+	//	{
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -50 + (-50 * nCntEnemy), 0), 4);
+	//		pEnemy->move.y = 3;
+	//		pEnemy->nLife = 3;
+	//		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -50 + (-50 * nCntEnemy), 0), 4);
+	//		pEnemy->move.y = 3;
+	//		pEnemy->nLife = 3;
+	//	}
+	//	break;
 
-	case 8:
-		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2, -100, 0), 5);
-		pEnemy->move = { 3.0f, 5.0f , 5.0f};
-		pEnemy->nLife = 50;
-		break;
+	//case 8:
+	//	pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2, -100, 0), 5);
+	//	pEnemy->move = { 3.0f, 5.0f , 5.0f};
+	//	pEnemy->nLife = 50;
+	//	break;
 
-	case 9:
-		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -100, 0), 5);
-		pEnemy->move = { 0.0f, 5.0f , 5.0f };
-		pEnemy->nLife = 50;
-		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -100, 0), 5);
-		pEnemy->move = { 0.0f, 5.0f , 5.0f };
-		pEnemy->nLife = 50;
-		break;
+	//case 9:
+	//	pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 300, -100, 0), 5);
+	//	pEnemy->move = { 0.0f, 5.0f , 5.0f };
+	//	pEnemy->nLife = 50;
+	//	pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 300, -100, 0), 5);
+	//	pEnemy->move = { 0.0f, 5.0f , 5.0f };
+	//	pEnemy->nLife = 50;
+	//	break;
 
-	case 10:
-		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 400, -100, 0), 5);
-		pEnemy->move = { 0.0f, 5.0f , 5.0f };
-		pEnemy->nLife = 50;
-		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 400, -100, 0), 5);
-		pEnemy->move = { 0.0f, 5.0f , 5.0f };
-		pEnemy->nLife = 50;
-		pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2, -100, 0), 5);
-		pEnemy->move = { 0.0f, 5.0f , 5.0f };
-		pEnemy->nLife = 50;
-		break;
-	}
+	//case 10:
+	//	pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 - 400, -100, 0), 5);
+	//	pEnemy->move = { 0.0f, 5.0f , 5.0f };
+	//	pEnemy->nLife = 50;
+	//	pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2 + 400, -100, 0), 5);
+	//	pEnemy->move = { 0.0f, 5.0f , 5.0f };
+	//	pEnemy->nLife = 50;
+	//	pEnemy = SetEnemy(D3DXVECTOR3(SCREEN_WIDTH / 2, -100, 0), 5);
+	//	pEnemy->move = { 0.0f, 5.0f , 5.0f };
+	//	pEnemy->nLife = 50;
+	//	break;
+	//}
 
 	stage1.nGameCount = 0;
 	stage1.waveState = WAVE_PROGRESSING;

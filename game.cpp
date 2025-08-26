@@ -150,3 +150,48 @@ void DrawGame(void)
 	// ƒXƒRƒA
 	DrawScore();
 }
+
+void LoadStage(ENEMYTIMELINE* pTimeline, const char* pFileName)
+{
+	FILE* pFile;
+	char aFileLine[MAX_PATH] = {};
+
+	pFile = fopen(pFileName, "r");
+
+	if (pFile != NULL)
+	{
+		while (fscanf(pFile, "%s", aFileLine) != -1)
+		{
+			if (strcmp(aFileLine, "TIMELINESET") == 0)
+			{
+				do
+				{
+					fscanf(pFile, "%s", aFileLine);
+
+					if (strcmp(aFileLine, "WAVE") == 0)
+					{
+						fscanf(pFile, "%*s%d", &pTimeline->nWave);
+					}
+					else if (strcmp(aFileLine, "TIME") == 0)
+					{
+						fscanf(pFile, "%*s%d", &pTimeline->nCountTime);
+					}
+					else if (strcmp(aFileLine, "TYPE") == 0)
+					{
+						fscanf(pFile, "%*s%d", &pTimeline->nType);
+					}
+					else if (strcmp(aFileLine, "POS") == 0)
+					{
+						fscanf(pFile, "%*s%f", &pTimeline->nPos.x);
+						fscanf(pFile, "%f", &pTimeline->nPos.y);
+					}
+					
+				} while (strcmp(aFileLine, "END_TIMELINESET") != 0);
+				pTimeline++;
+			}
+		}
+
+	}
+
+
+}

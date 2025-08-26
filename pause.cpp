@@ -22,13 +22,11 @@
 #define TEXTURE_SCALE_X			(500)
 #define TEXTURE_SCALE_Y			(100)
 
-#define NUM_PAUSE				(3)
-
 #define COLOR_SELECTED			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
 #define COLOR_DESELECTED		D3DXCOLOR(0.25f, 0.25f, 0.25f, 1.0f)
 
 // グローバル変数宣言
-LPDIRECT3DTEXTURE9 g_apTexturePause[NUM_PAUSE] = {};		// テクスチャへのポインタ
+LPDIRECT3DTEXTURE9 g_apTexturePause[PAUSE_MENU_MAX] = {};		// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffPause = NULL;				// 頂点バッファへのポインタ
 int g_nPauseMenu;
 
@@ -66,7 +64,7 @@ void InitPause(void)
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(
-		sizeof(VERTEX_2D) * 4 * NUM_PAUSE,
+		sizeof(VERTEX_2D) * 4 * PAUSE_MENU_MAX,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
@@ -77,7 +75,7 @@ void InitPause(void)
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffPause->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntPause = 0; nCntPause < NUM_PAUSE; nCntPause++)
+	for (int nCntPause = 0; nCntPause < PAUSE_MENU_MAX; nCntPause++)
 	{
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3(g_pauseMenuPos.x - TEXTURE_SCALE_X / 2, g_pauseMenuPos.y + (100 * nCntPause) - TEXTURE_SCALE_Y / 2, 0.0f);
@@ -116,7 +114,7 @@ void UninitPause(void)
 {
 	int nCntPause;
 
-	for (nCntPause = 0; nCntPause < NUM_PAUSE; nCntPause++)
+	for (nCntPause = 0; nCntPause < PAUSE_MENU_MAX; nCntPause++)
 	{
 		// テクスチャの破棄
 		if (g_apTexturePause[nCntPause] != NULL)
@@ -144,7 +142,7 @@ void UpdatePause(void)
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffPause->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntPause = 0; nCntPause < NUM_PAUSE; nCntPause++)
+	for (int nCntPause = 0; nCntPause < PAUSE_MENU_MAX; nCntPause++)
 	{
 		if (nCntPause == g_nPauseMenu)
 		{
@@ -182,11 +180,11 @@ void UpdatePause(void)
 		}
 	}
 
-	if (GetKeyboardRepeat(DIK_UP))
+	if (GetKeyboardRepeat(DIK_W))
 	{
 		g_nPauseMenu = g_nPauseMenu - 1;
 	}
-	if (GetKeyboardRepeat(DIK_DOWN))
+	if (GetKeyboardRepeat(DIK_S))
 	{
 		g_nPauseMenu = g_nPauseMenu + 1;
 	}
@@ -217,7 +215,7 @@ void DrawPause(void)
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
-	for (nCntPause = 0; nCntPause < NUM_PAUSE; nCntPause++)
+	for (nCntPause = 0; nCntPause < PAUSE_MENU_MAX; nCntPause++)
 	{
 		// テクスチャの設定
 		pDevice->SetTexture(0, g_apTexturePause[nCntPause]);

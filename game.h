@@ -43,5 +43,6 @@ void InitGame(void);
 void UninitGame(void);
 void UpdateGame(void);
 void DrawGame(void);
+void LoadStage(ENEMYTIMELINE* pTimeline, const char* pFileName);
 
 #endif
