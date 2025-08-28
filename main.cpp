@@ -19,7 +19,7 @@
 #include "player.h"
 
 // マクロ定義
-#define CLASS_NAME			"WindowsClass"					// ウィンドウクラスの名前
+#define CLASS_NAME			"WindowsClass"							// ウィンドウクラスの名前
 #define WINDOW_NAME			"シューティングゲーム(アルファ)"		// ウィンドウの名前（キャプションに表示される文字列）
 
 // プロトタイプ宣言
@@ -45,8 +45,8 @@ HWND g_hWndMain;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine, int nCmdShow)
 {
 #ifdef _DEBUG
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);			// メモリリーク検知用のフラグ
-#endif // _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);		// メモリうんこ検知用のフラグ
+#endif
 
 	// ウィンドウクラスの設定
 	WNDCLASSEX wcex = {

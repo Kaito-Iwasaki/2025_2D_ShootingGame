@@ -52,26 +52,6 @@ void InitStage1(void)
 
 	LoadStage(&timeline[0], "data\\STAGE\\stage01.txt");
 
-	//timeline[0].nWave = 0;
-	//timeline[0].nCountTime = 1;
-	//timeline[0].nType = 0;
-	//timeline[0].nPos = D3DXVECTOR3(SCREEN_WIDTH / 2 , -50, 0);
-
-	//timeline[1].nWave = 0;
-	//timeline[1].nCountTime = 3;
-	//timeline[1].nType = 0;
-	//timeline[1].nPos = D3DXVECTOR3(SCREEN_WIDTH / 2, -100, 0);
-
-	//timeline[2].nWave = 0;
-	//timeline[2].nCountTime = 5;
-	//timeline[2].nType = 0;
-	//timeline[2].nPos = D3DXVECTOR3(SCREEN_WIDTH / 2, -150, 0);
-
-	//timeline[3].nWave = 0;
-	//timeline[3].nCountTime = 7;
-	//timeline[3].nType = 0;
-	//timeline[3].nPos = D3DXVECTOR3(SCREEN_WIDTH / 2, -200, 0);
-
 	//***********************************
 	// 各種オブジェクトの初期化処理
 	//***********************************

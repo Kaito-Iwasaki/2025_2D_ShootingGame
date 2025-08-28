@@ -58,6 +58,8 @@ void InitGame(void)
 
 	// サウンドの再生
 	PlaySound(SOUND_LABEL_BGM004);
+
+
 }
 
 void UninitGame(void)
@@ -65,7 +67,7 @@ void UninitGame(void)
 	// サウンドの停止
 	StopSound();
 
-	// << 各種オブジェクトの終了処理 >>
+	//// << 各種オブジェクトの終了処理 >>
 	// プレイヤーの初期化処理
 	UninitPlayer();
 
@@ -151,6 +153,29 @@ void DrawGame(void)
 	DrawScore();
 }
 
+bool ReadLine(char* buffer, int nMaxCount, FILE* pFile)
+{
+	if (fgets(buffer, nMaxCount, pFile) != NULL)
+	{
+		for (int i = 0; i < strlen(buffer); i++)
+		{
+			if (buffer[i] == '#')
+			{
+				buffer[i] = '\0';
+				break;
+			}
+			else if (buffer[i] == EOF)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	
+	return false;
+}
+
 void LoadStage(ENEMYTIMELINE* pTimeline, const char* pFileName)
 {
 	FILE* pFile;
@@ -159,10 +184,10 @@ void LoadStage(ENEMYTIMELINE* pTimeline, const char* pFileName)
 	pFile = fopen(pFileName, "r");
 
 	if (pFile != NULL)
-	{
-		while (fscanf(pFile, "%s", aFileLine) != -1)
+	{// テキストファイル読み込み
+		while (ReadLine(aFileLine, 256, pFile))
 		{
-			if (strcmp(aFileLine, "TIMELINESET") == 0)
+			if (strstr(aFileLine, "TIMELINESET"))
 			{
 				do
 				{
@@ -185,13 +210,10 @@ void LoadStage(ENEMYTIMELINE* pTimeline, const char* pFileName)
 						fscanf(pFile, "%*s%f", &pTimeline->nPos.x);
 						fscanf(pFile, "%f", &pTimeline->nPos.y);
 					}
-					
 				} while (strcmp(aFileLine, "END_TIMELINESET") != 0);
+
 				pTimeline++;
 			}
 		}
-
 	}
-
-
 }
