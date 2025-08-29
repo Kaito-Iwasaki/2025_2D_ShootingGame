@@ -4,26 +4,24 @@
 // Author:岩崎桧翔
 //
 //=====================================================================
-#include "sound.h"
-
 #include "effect.h"
-#include "explosion.h"
-#include "enemy.h"
-#include "player.h"
-#include "score.h"
 
+//*******************************************
 // マクロ定義
-#define TEXTURE_FILENAME1			"data\\TEXTURE\\effect000.jpg"				// テクスチャのファイル名
-#define TEXTURE_SCALE_X				(64.0f)									// テクスチャのサイズX
-#define TEXTURE_SCALE_Y				(64.0f)									// テクスチャのサイズY
-#define TEXTURE_COLOR				D3DXCOLOR(0.5f, 0.5f, 0.5f, 0.5f)		// テクスチャの色
+//*******************************************
+#define DEF_TEXTURE_FILENAME			"data\\TEXTURE\\effect000.jpg"			// テクスチャのファイル名
+#define DEF_TEXTURE_SCALE_X				(64.0f)									// テクスチャのサイズX
+#define DEF_TEXTURE_SCALE_Y				(64.0f)									// テクスチャのサイズY
+#define DEF_TEXTURE_COLOR				D3DXCOLOR(0.5f, 0.5f, 0.5f, 0.5f)		// テクスチャの色
 
-#define EFFECT_LIFETIME				(400.0f)								// エフェクトが残る時間
-#define EFFECT_SIZE					(30.0f)									// エフェクトのサイズ倍率
+#define DEF_EFFECT_LIFETIME				(400.0f)								// エフェクトが残る時間
+#define DEF_EFFECT_SIZE					(30.0f)									// エフェクトのサイズ倍率
 
+//*******************************************
 // グローバル変数宣言
-LPDIRECT3DTEXTURE9 g_apTextureEffect[EFFECTTYPE_MAX] = {};	// テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffEffect = NULL;				// 頂点バッファへのポインタ
+//*******************************************
+LPDIRECT3DTEXTURE9 g_pTextureEffect = NULL;		// テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffEffect = NULL;	// 頂点バッファへのポインタ
 Effect g_aEffect[MAX_EFFECT];
 
 float g_fLengthEffect;				// 対角線の長さ
@@ -42,16 +40,24 @@ void InitEffect(void)
 	pDevice = GetDevice();
 
 	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, TEXTURE_FILENAME1, &g_apTextureEffect[0]);
+	D3DXCreateTextureFromFile(pDevice, DEF_TEXTURE_FILENAME, &g_pTextureEffect);
 
 	// エフェクトの情報の初期化
+	ZeroMemory(pEffect, sizeof(pEffect) * MAX_EFFECT);
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
 	{
+		//strcpy(pEffect[nCntEffect].cTextureFilePath, DEF_TEXTURE_FILENAME);
+
 		pEffect[nCntEffect].pos = D3DXVECTOR3_ZERO;
-		pEffect[nCntEffect].size = { TEXTURE_SCALE_X , TEXTURE_SCALE_Y, 0.0f };
-		pEffect[nCntEffect].col = TEXTURE_COLOR;
+		pEffect[nCntEffect].fRot = 0.0f;
+		pEffect[nCntEffect].size = { DEF_TEXTURE_SCALE_X, DEF_TEXTURE_SCALE_Y, 0.0f };
+		pEffect[nCntEffect].fScale = 0.0f;
+
+		pEffect[nCntEffect].col = DEF_TEXTURE_COLOR;
 		pEffect[nCntEffect].fRad = 0.0f;
-		pEffect[nCntEffect].nLifeTime = EFFECT_LIFETIME;
+		pEffect[nCntEffect].fLifeTime = DEF_EFFECT_LIFETIME;
+		pEffect[nCntEffect].fMaxLifeTime = DEF_EFFECT_LIFETIME;
+		pEffect[nCntEffect].bUseTexture = true;
 		pEffect[nCntEffect].bUsed = false;
 	}
 
@@ -122,13 +128,10 @@ void InitEffect(void)
 void UninitEffect(void)
 {
 	// テクスチャの破棄
-	for (int nCntEffect = 0; nCntEffect < EFFECTTYPE_MAX; nCntEffect++)
+	if (g_pTextureEffect != NULL)
 	{
-		if (g_apTextureEffect[nCntEffect] != NULL)
-		{
-			g_apTextureEffect[nCntEffect]->Release();
-			g_apTextureEffect[nCntEffect] = NULL;
-		}
+		g_pTextureEffect->Release();
+		g_pTextureEffect = NULL;
 	}
 
 	// 頂点バッファの破棄
@@ -155,6 +158,13 @@ void UpdateEffect(void)
 	{
 		if (pEffect->bUsed == true)
 		{
+			// 値の設定
+			pEffect->fLifeTime--;
+			pEffect->pos.x = pEffect->pos.x + sin(pEffect->fRad) * pEffect->fSpeed;
+			pEffect->pos.y = pEffect->pos.y + cos(pEffect->fRad) * pEffect->fSpeed;
+			pEffect->fScale = pEffect->fMaxScale * (pEffect->fLifeTime / pEffect->fMaxLifeTime);
+			pEffect->col.a = pEffect->fMaxAlpha * (pEffect->fLifeTime / pEffect->fMaxLifeTime);
+
 			// 対角線の長さを算出
 			g_fLengthEffect = sqrtf(pEffect->size.x * pEffect->size.x + pEffect->size.y * pEffect->size.y) * 0.5 * pEffect->fScale;
 
@@ -162,17 +172,17 @@ void UpdateEffect(void)
 			g_fAngleEffect = atan2f(pEffect->size.x, pEffect->size.y);
 
 			// 頂点座標の設定
-			pVtx[0].pos.x = pEffect->pos.x + sin(0.0f + g_fAngleEffect) * g_fLengthEffect;
-			pVtx[0].pos.y = pEffect->pos.y + cos(0.0f + g_fAngleEffect) * g_fLengthEffect;
+			pVtx[0].pos.x = pEffect->pos.x + sin(pEffect->fRot + 0.0f + g_fAngleEffect) * g_fLengthEffect;
+			pVtx[0].pos.y = pEffect->pos.y + cos(pEffect->fRot + 0.0f + g_fAngleEffect) * g_fLengthEffect;
 			pVtx[0].pos.z = 0.0f;
-			pVtx[1].pos.x = pEffect->pos.x + sin(0.0f - g_fAngleEffect) * g_fLengthEffect;
-			pVtx[1].pos.y = pEffect->pos.y + cos(0.0f - g_fAngleEffect) * g_fLengthEffect;
+			pVtx[1].pos.x = pEffect->pos.x + sin(pEffect->fRot + 0.0f - g_fAngleEffect) * g_fLengthEffect;
+			pVtx[1].pos.y = pEffect->pos.y + cos(pEffect->fRot + 0.0f - g_fAngleEffect) * g_fLengthEffect;
 			pVtx[1].pos.z = 0.0f;
-			pVtx[2].pos.x = pEffect->pos.x + sin(D3DX_PI - g_fAngleEffect) * g_fLengthEffect;
-			pVtx[2].pos.y = pEffect->pos.y + cos(D3DX_PI - g_fAngleEffect) * g_fLengthEffect;
+			pVtx[2].pos.x = pEffect->pos.x + sin(pEffect->fRot + D3DX_PI - g_fAngleEffect) * g_fLengthEffect;
+			pVtx[2].pos.y = pEffect->pos.y + cos(pEffect->fRot + D3DX_PI - g_fAngleEffect) * g_fLengthEffect;
 			pVtx[2].pos.z = 0.0f;
-			pVtx[3].pos.x = pEffect->pos.x + sin(D3DX_PI + g_fAngleEffect) * g_fLengthEffect;
-			pVtx[3].pos.y = pEffect->pos.y + cos(D3DX_PI + g_fAngleEffect) * g_fLengthEffect;
+			pVtx[3].pos.x = pEffect->pos.x + sin(pEffect->fRot + D3DX_PI + g_fAngleEffect) * g_fLengthEffect;
+			pVtx[3].pos.y = pEffect->pos.y + cos(pEffect->fRot + D3DX_PI + g_fAngleEffect) * g_fLengthEffect;
 			pVtx[3].pos.z = 0.0f;
 
 			// 頂点カラーの設定
@@ -181,11 +191,7 @@ void UpdateEffect(void)
 			pVtx[2].col = pEffect->col;
 			pVtx[3].col = pEffect->col;
 
-			pEffect->nLifeTime--;
-			pEffect->fScale = (float)pEffect->nLifeTime / (float)pEffect->nMaxLifeTime;
-
-
-			if (pEffect->nLifeTime == 0)
+			if (pEffect->fLifeTime == 0)
 			{// エフェクトの寿命が尽きたら消す
 				pEffect->bUsed = false;
 			}
@@ -223,7 +229,14 @@ void DrawEffect(void)
 		if (g_aEffect[nCntEffect].bUsed == true)
 		{
 			// テクスチャの設定
-			pDevice->SetTexture(0, g_apTextureEffect[g_aEffect[nCntEffect].type]);
+			if (g_aEffect[nCntEffect].bUseTexture)
+			{
+				pDevice->SetTexture(0, g_pTextureEffect);
+			}
+			else
+			{
+				pDevice->SetTexture(0, NULL);
+			}
 
 			 //ポリゴンの描画
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntEffect * 4, 2);
@@ -238,7 +251,7 @@ void DrawEffect(void)
 //=====================================================================
 // エフェクトの設定処理
 //=====================================================================
-void SetEffect(D3DXVECTOR3 pos, D3DXCOLOR col, float fRad, float fScale, int nLife)
+void SetEffect(D3DXVECTOR3 pos, D3DXCOLOR col, float fRad, float fSpeed, float fScale, float fLifeTime, bool bUseTexture)
 {
 	VERTEX_2D* pVtx;
 	Effect* pEffect = &g_aEffect[0];
@@ -250,31 +263,47 @@ void SetEffect(D3DXVECTOR3 pos, D3DXCOLOR col, float fRad, float fScale, int nLi
 	{
 		if (pEffect->bUsed == false)
 		{
+			// 対角線の長さを算出
+			g_fLengthEffect = sqrtf(pEffect->size.x * pEffect->size.x + pEffect->size.y * pEffect->size.y) * 0.5 * pEffect->fScale;
+
+			// 対角線の角度を算出
+			g_fAngleEffect = atan2f(pEffect->size.x, pEffect->size.y);
+
 			// 位置の更新
 			pEffect->pos = pos;
-			pEffect->size = { TEXTURE_SCALE_X , TEXTURE_SCALE_Y, 0.0f };
-			pEffect->fScale = 1.0f;
-			pEffect->col = col;
-			pEffect->fRad = 0.0f;
+			pEffect->fRot = 0.0f;
+			pEffect->size = { DEF_TEXTURE_SCALE_X, DEF_TEXTURE_SCALE_Y, 0.0f };
 			pEffect->fScale = fScale;
-			pEffect->nLifeTime = nLife;
-			pEffect->nMaxLifeTime = nLife;
-			pEffect->type = EFFECTTYPE_NORMAL;
+			pEffect->fMaxScale = fScale;
+
+			pEffect->col = col;
+			pEffect->fMaxAlpha = col.a;
+			pEffect->fRad = fRad;
+			pEffect->fSpeed = fSpeed;
+			pEffect->fLifeTime = fLifeTime;
+			pEffect->fMaxLifeTime = fLifeTime;
+			pEffect->bUseTexture = bUseTexture;
 			pEffect->bUsed = true;
 
 			// 頂点座標の設定
-			pVtx[0].pos.x = pEffect->pos.x + sin(0 + g_fAngleEffect) * g_fLengthEffect;
-			pVtx[0].pos.y = pEffect->pos.y + cos(0 + g_fAngleEffect) * g_fLengthEffect;
+			pVtx[0].pos.x = pEffect->pos.x + sin(pEffect->fRot + 0.0f + g_fAngleEffect) * g_fLengthEffect;
+			pVtx[0].pos.y = pEffect->pos.y + cos(pEffect->fRot + 0.0f + g_fAngleEffect) * g_fLengthEffect;
 			pVtx[0].pos.z = 0.0f;
-			pVtx[1].pos.x = pEffect->pos.x + sin(0 - g_fAngleEffect) * g_fLengthEffect;
-			pVtx[1].pos.y = pEffect->pos.y + cos(0 - g_fAngleEffect) * g_fLengthEffect;
+			pVtx[1].pos.x = pEffect->pos.x + sin(pEffect->fRot + 0.0f - g_fAngleEffect) * g_fLengthEffect;
+			pVtx[1].pos.y = pEffect->pos.y + cos(pEffect->fRot + 0.0f - g_fAngleEffect) * g_fLengthEffect;
 			pVtx[1].pos.z = 0.0f;
-			pVtx[2].pos.x = pEffect->pos.x + sin(D3DX_PI - g_fAngleEffect) * g_fLengthEffect;
-			pVtx[2].pos.y = pEffect->pos.y + cos(D3DX_PI - g_fAngleEffect) * g_fLengthEffect;
+			pVtx[2].pos.x = pEffect->pos.x + sin(pEffect->fRot + D3DX_PI - g_fAngleEffect) * g_fLengthEffect;
+			pVtx[2].pos.y = pEffect->pos.y + cos(pEffect->fRot + D3DX_PI - g_fAngleEffect) * g_fLengthEffect;
 			pVtx[2].pos.z = 0.0f;
-			pVtx[3].pos.x = pEffect->pos.x + sin(D3DX_PI + g_fAngleEffect) * g_fLengthEffect;
-			pVtx[3].pos.y = pEffect->pos.y + cos(D3DX_PI + g_fAngleEffect) * g_fLengthEffect;
+			pVtx[3].pos.x = pEffect->pos.x + sin(pEffect->fRot + D3DX_PI + g_fAngleEffect) * g_fLengthEffect;
+			pVtx[3].pos.y = pEffect->pos.y + cos(pEffect->fRot + D3DX_PI + g_fAngleEffect) * g_fLengthEffect;
 			pVtx[3].pos.z = 0.0f;
+
+			// 頂点カラーの設定
+			pVtx[0].col = pEffect->col;
+			pVtx[1].col = pEffect->col;
+			pVtx[2].col = pEffect->col;
+			pVtx[3].col = pEffect->col;
 
 			break;
 		}
@@ -283,4 +312,14 @@ void SetEffect(D3DXVECTOR3 pos, D3DXCOLOR col, float fRad, float fScale, int nLi
 
 	// 頂点バッファをアンロック
 	g_pVtxBuffEffect->Unlock();
+}
+
+void ClearAllEffect(void)
+{
+	Effect* pEffect = &g_aEffect[0];
+
+	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++, pEffect++)
+	{
+		pEffect->bUsed = false;
+	}
 }

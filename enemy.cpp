@@ -12,6 +12,7 @@
 #include "sound.h"
 #include "collision.h"
 #include "util.h"
+#include "particle.h"
 
 // マクロ定義
 #define TEXTURE1_FILENAME			"data\\TEXTURE\\enemy000.png"		// 敵1のテクスチャ
@@ -446,10 +447,11 @@ void HitEnemy(int nCntEnemy, int nDamage)
 
 	if (g_aEnemy[nCntEnemy].nLife < 1)
 	{
-		SetExplosion(g_aEnemy[nCntEnemy].pos + g_aEnemy[nCntEnemy].posOffset, D3DXCOLOR(0.75f, 0.75f, 0.75f, 1.0f));
+		//SetExplosion(g_aEnemy[nCntEnemy].pos + g_aEnemy[nCntEnemy].posOffset, D3DXCOLOR(0.75f, 0.75f, 0.75f, 1.0f));
 		g_aEnemy[nCntEnemy].bUsed = false;
 		AddScore(100);
 		PlaySound(SOUND_LABEL_SE_HIT000);
+		SetParticle(g_aEnemy[nCntEnemy].pos + g_aEnemy[nCntEnemy].posOffset, D3DXCOLOR(1.0f, 0.3f, 0.0f, 0.5f), D3DX_PI * 2, 1.0f, 0.5f, 5.0f);
 	}
 	else if (g_aEnemy[nCntEnemy].state != ENEMYSTATE_DAMAGED)
 	{

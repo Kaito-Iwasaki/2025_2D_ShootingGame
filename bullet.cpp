@@ -369,7 +369,7 @@ void CollisionBullet(Bullet* pBullet)
 				{
 					pEnemyBullet->bUsed = false;
 
-					SetExplosion(pBullet->pos, D3DXCOLOR(1.0f, 0.5f, 0.0f, 1.0f));
+					SetExplosion(pBullet->pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					AddScore(10);
 					PlaySound(SOUND_LABEL_SE_HIT000);
 
